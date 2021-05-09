@@ -11,11 +11,11 @@
 	<groupId>com.opa</groupId>
 	<artifactId>bbsr</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
 	<name>bbsr</name>
 	<description>Odisha photography association</description>
 	<properties>
 		<java.version>11</java.version>
+		<maven.build.timestamp.format>yyyyMMddHHmmssSSS</maven.build.timestamp.format>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -31,7 +31,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -70,11 +73,46 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.4</version>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.microsoft.azure</groupId>
+				<artifactId>azure-webapp-maven-plugin</artifactId>
+				<version>0.1.5</version>
 				<configuration>
-					<warSourceDirectory>WebContent</warSourceDirectory>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<authentication>
+						<serverId>azure-auth</serverId>
+					</authentication>
+					<resourceGroup>maven-plugin</resourceGroup>
+					<appName>maven-web-app-${maven.build.timestamp}</appName>
+					<region>westus</region>
+					<javaVersion>11</javaVersion>
+					<deploymentType>ftp</deploymentType>
+					<stopAppDuringDeployment>true</stopAppDuringDeployment>
+					<resources>
+						<resource>
+							<directory>${project.basedir}/target</directory>
+							<targetPath>/</targetPath>
+							<includes>
+								<include>*.jar</include>
+							</includes>
+						</resource>
+						<resource>
+							<directory>${project.basedir}</directory>
+							<targetPath>/</targetPath>
+							<includes>
+								<include>web.config</include>
+							</includes>
+						</resource>
+					</resources>
 				</configuration>
 			</plugin>
 		</plugins>
