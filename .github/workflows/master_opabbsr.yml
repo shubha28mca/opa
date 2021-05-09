@@ -28,7 +28,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: java-app
-        path: '${{ github.workspace }}/target/*.war'
+        path: '${{ github.workspace }}\target\*.jar'
 
   deploy:
     runs-on: windows-latest
@@ -50,4 +50,4 @@ jobs:
         app-name: 'opabbsr'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_357c59e2d61e4de08a70b5c259470615 }}
-        package: '*.war'
+        package: '*.jar'
